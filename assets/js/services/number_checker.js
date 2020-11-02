@@ -24,11 +24,19 @@ export default class NumberChecker {
   }
 
   top10Result() {
-    return _.sortBy(_.toPairs(this.result), i => -i[1]).slice(0, 10);
+    return this.resultToPairs().slice(0, 10);
   }
 
   top10ResultNumber() {
     return this.top10Result().map(i => i[0])
+  }
+
+  rangeResultNumber() {
+    return this.resultToPairs().map(i => i[0])
+  }
+
+  resultToPairs() {
+    return _.sortBy(_.toPairs(this.result), i => -i[1])
   }
 
   rangeResultToPairs() {
@@ -64,7 +72,7 @@ export default class NumberChecker {
 
   checkRange() {
     // Kiểm tra số lần đi kèm đối với 2 con số
-    let arrayNum = this.top10ResultNumber() || _.range(0, 100);
+    let arrayNum = this.rangeResultNumber() || _.range(0, 100);
     arrayNum.map((num) => {
       num = (num.toString().length === 1 ? '0' : '') + num;
       this.checkRangeNumber(num);
@@ -75,15 +83,19 @@ export default class NumberChecker {
     this.allNumberArray.forEach(num => {
       let numStr = num.toString();
       if (numStr.indexOf(number) !== -1) {
-        numStr = numStr.replace(number, '');
-
-        if (!numStr) return;
-
-        numStr.split('').forEach((numChar) => {
-          let targetNum = `[${numChar}]${number}`;
-          this.rangeResult[targetNum] = (this.rangeResult[targetNum] || 0) + 1;
-        });
+        let match = numStr.match(new RegExp(`([0-9]*)${number}([0-9]*)`));
+        this.checkRangeNumberWithString(number, match[1], true);
+        this.checkRangeNumberWithString(number, match[2], false);
       }
+    });
+  }
+
+  checkRangeNumberWithString(number, numStr, prev = true) {
+    if (!numStr) return;
+
+    numStr.split('').forEach((numChar) => {
+      let targetNum = prev ? `${numChar}${number}` : `${number}${numChar}`;
+      this.rangeResult[targetNum] = (this.rangeResult[targetNum] || 0) + 1;
     });
   }
 }
