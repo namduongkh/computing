@@ -9,7 +9,7 @@
         >{{ n }}</span
       >
     </div>
-    <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-sm table-striped">
       <thead>
         <tr>
           <th></th>

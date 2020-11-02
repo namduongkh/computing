@@ -43,16 +43,20 @@ export default {
   computed: {
     filteredNumber() {
       if (!this.numberFilter) return this.numbers;
-      return this.numbers.filter((i) => i[0].indexOf(this.numberFilter) != -1);
+      return this.numbers.filter(
+        (i) => i[0].replace(/(\[|\])/gi, "").indexOf(this.numberFilter) != -1
+      );
     },
   },
   filters: {
     displayNumber(num, numberFilter = "") {
-      if (!numberFilter) return num;
-      return num.replace(
-        new RegExp(`(.*)(${numberFilter})(.*)`, "gi"),
-        "$1<b>$2</b>$3"
-      );
+      // if (!numberFilter) {
+      return num.replace(/\[(\d+)\]/gi, "<u>$1</u>");
+      // }
+
+      // return num
+      //   .replace(/(\[|\])/gi, "")
+      //   .replace(new RegExp(`(${numberFilter})`, "gi"), "<b>$1</b>");
     },
     displayWithNumber(num) {
       let match = num.match(/\[(\d)\](\d{2})/);
