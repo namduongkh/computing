@@ -94,7 +94,7 @@ export default class NumberChecker {
     if (!numStr) return;
 
     numStr.split('').forEach((numChar) => {
-      let targetNum = prev ? `${numChar}${number}` : `${number}${numChar}`;
+      let targetNum = prev ? `[${numChar}]${number}` : `${number}[${numChar}]`;
       this.rangeResult[targetNum] = (this.rangeResult[targetNum] || 0) + 1;
     });
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Fetcher @onFetch="fetch" />
+    <Fetcher @onFetch="fetch" :rssDates="rssDates" />
     <PairTable :numbers="numberResult" :topNumbers="topNumbers" />
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -65,6 +65,7 @@ export default {
       fetcher: null,
       checker: null,
       feedNumber: {},
+      rssDates: [],
     };
   },
   computed: {
@@ -89,10 +90,12 @@ export default {
   },
   methods: {
     async fetch(data) {
-      this.fetcher = new NumberFetcher(data.rss, data.avoidDate);
+      this.fetcher = NumberFetcher.getInstance(data.rss, data.selectedDate);
       await this.fetcher.perform();
 
       this.feedNumber = this.fetcher.number;
+      this.rssDates = this.fetcher.allDates();
+
       this.checker = new NumberChecker(this.fetcher.number);
       this.checker.perform();
     },

@@ -4,21 +4,35 @@ import RssParser from "./rss_parser";
 
 export default class NumberFetcher {
 
-  constructor(url, avoidDate = 0) {
+  static getInstance(url, accepts = false) {
+    if (!this.instance) {
+      this.instance = new this(url, accepts);
+    } else {
+      this.instance.url = url;
+      this.instance.acceptedDates = accepts;
+    }
+    return this.instance;
+  }
+
+  constructor(url, accepts = false) {
     this.url = url
-    this.number = {};
+    this.acceptedDates = accepts;
     this.excludeDates = [moment().format('D-M')];
-    this.avoidDate = avoidDate;
+    this.loaded = {};
   }
 
   async perform() {
     console.log('Fetching:', this.url);
 
-    let feed = await (new RssParser(this.url)).perform();
+    let feed = this.loaded[this.url] || await (new RssParser(this.url)).perform();
+    this.loaded[this.url] = feed;
+    this.number = {};
 
     feed.item.forEach((item, index) => {
       if (this.exclude(item.link)) return;
-      if (this.avoidDate > 0) return this.avoidDate--;
+
+      this.number[item.link] = [];
+      if (Array.isArray(this.acceptedDates) && this.acceptedDates.indexOf(item.link) == -1) return;
 
       item.description = item.description.replace(/\n/gim, '');
       let numberStr = item.description.replace(/^ĐB:\s([\d\s-]+)1:\s([\d\s-]+)2:\s([\d\s-]+)3:\s([\d\s-]+)4:\s([\d\s-]+)5:\s([\d\s-]+)6:\s([\d\s-]+)7:\s([\d\s-]+)8:\s([\d\s-]+)$/gi, '$1,$2,$3,$4,$5,$6,$7,$8,$9');
@@ -38,5 +52,9 @@ export default class NumberFetcher {
       if (link.indexOf(this.excludeDates[i]) !== -1) return true;
     }
     return false;
+  }
+
+  allDates() {
+    return Object.keys(this.number);
   }
 }

@@ -9,12 +9,19 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="">Number of avoid date</label>
-      <input type="number" min="0" v-model="avoidDate" class="form-control" />
+      <div v-for="o in rssDates" :key="o" :value="o">
+        <input type="checkbox" v-model="selectedDate[o]" />
+        {{ o }}
+      </div>
     </div>
     <div class="text-right">
-      <button type="button" class="btn btn-primary" @click="onFetch()">
-        Fetch & Check
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="onFetch()"
+        v-if="showFetchButton"
+      >
+        Check
       </button>
     </div>
   </div>
@@ -34,16 +41,41 @@ const RSS = {
 
 export default {
   name: "Fetcher",
+  props: {
+    rssDates: {
+      type: Array,
+      default: [],
+    },
+  },
   data() {
     return {
       RSS: Object.keys(RSS),
       rss: null,
-      avoidDate: 0,
+      selectedDate: {},
     };
+  },
+  computed: {
+    showFetchButton() {
+      return this.rssDates.length > 0;
+    },
+    selectedDateArray() {
+      return Object.entries(this.selectedDate)
+        .filter((i) => i[1] == true)
+        .map((i) => i[0]);
+    },
   },
   methods: {
     onFetch() {
-      this.$emit("onFetch", { rss: RSS[this.rss], avoidDate: this.avoidDate });
+      this.$emit("onFetch", {
+        rss: RSS[this.rss],
+        selectedDate: this.selectedDateArray,
+      });
+    },
+  },
+  watch: {
+    rss(val) {
+      this.selectedDate = {};
+      this.onFetch();
     },
   },
 };
