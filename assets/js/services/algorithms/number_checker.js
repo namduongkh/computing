@@ -49,14 +49,14 @@ export default class NumberChecker {
   }
 
   checkNumber(number) {
-    let splittedNum = number.toString().split('');
+    let splitNum = number.toString().split('');
 
     // Qua từng con số, đếm số lần xuất hiện của số liền kề trước và sau
-    splittedNum.forEach((num, index) => {
+    splitNum.forEach((num, index) => {
       // if (!this.result[num]) this.result[num] = {};
 
-      let prev = splittedNum[index - 1];
-      let next = splittedNum[index + 1];
+      let prev = splitNum[index - 1];
+      let next = splitNum[index + 1];
 
       if (prev) {
         let targetNum = `${prev}${num}`;
