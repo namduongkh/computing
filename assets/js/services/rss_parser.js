@@ -1,4 +1,5 @@
 import { parseStringPromise } from 'xml2js';
+import axios from "axios";
 
 export default class RssParser {
 
@@ -10,9 +11,8 @@ export default class RssParser {
     const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
     return new Promise((rs, rj) => {
-      fetch(CORS_PROXY + this.url)
-        .then(response => response.text())
-        .then(data => {
+      axios.get(CORS_PROXY + this.url)
+        .then(({ data }) => {
           return parseStringPromise(data, {
             explicitArray: false
           });

@@ -1,33 +1,41 @@
 <template>
   <div>
     <div class="form-group">
-      <label for="">Province</label>
+      <strong for="">Tỉnh:</strong>
       <select v-model="rss" class="form-control">
         <option v-for="o in RSS" :key="o" :value="o">
           {{ o }}
         </option>
       </select>
     </div>
-    <div class="form-group">
-      <div v-for="o in rssDates" :key="o" :value="o">
-        <input type="checkbox" v-model="selectedDate[o]" />
-        {{ o }}
+    <div v-if="rssDates.length">
+      <div class="form-group">
+        <strong for="">Ngày gần nhất:</strong>
+        <div v-for="o in rssDates" :key="o" :value="o">
+          <input type="checkbox" v-model="selectedDate[o]" />
+          {{ o }}
+        </div>
       </div>
-    </div>
-    <div class="text-right">
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="onFetch()"
-        v-if="showFetchButton"
-      >
-        Check
-      </button>
+
+      <div class="form-group">
+        <strong for="">Thuật toán:</strong>
+        <select
+          v-model="selectedAlgorithm"
+          class="form-control"
+          @change="onCheck"
+        >
+          <option v-for="o in algorithms" :key="o[0]" :value="o[0]">
+            {{ o[1] }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 const RSS = {
   phu_yen: "https://xskt.com.vn/rss-feed/phu-yen-xspy.rss",
   dak_lak: "https://xskt.com.vn/rss-feed/dac-lac-xsdlk.rss",
@@ -41,20 +49,20 @@ const RSS = {
 
 export default {
   name: "Fetcher",
-  props: {
-    rssDates: {
-      type: Array,
-      default: [],
-    },
-  },
   data() {
     return {
       RSS: Object.keys(RSS),
       rss: null,
       selectedDate: {},
+      algorithms: [
+        ["pair", "Cặp đôi hoàn hảo"],
+        ["separation", "Đôi ngã chia ly"],
+      ],
+      selectedAlgorithm: "pair",
     };
   },
   computed: {
+    ...mapGetters(["selectedProvince", "selectedFeed"]),
     showFetchButton() {
       return this.rssDates.length > 0;
     },
@@ -63,12 +71,20 @@ export default {
         .filter((i) => i[1] == true)
         .map((i) => i[0]);
     },
+    rssDates() {
+      return Object.keys(this.selectedFeed || {});
+    },
   },
   methods: {
     onFetch() {
       this.$emit("onFetch", {
         rss: RSS[this.rss],
+      });
+    },
+    onCheck() {
+      this.$emit("onCheck", {
         selectedDate: this.selectedDateArray,
+        selectedAlgorithm: this.selectedAlgorithm,
       });
     },
   },
@@ -76,6 +92,9 @@ export default {
     rss(val) {
       this.selectedDate = {};
       this.onFetch();
+    },
+    selectedDateArray() {
+      this.onCheck();
     },
   },
 };

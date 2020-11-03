@@ -44,6 +44,7 @@ export default class NumberFetcher {
       this.number[item.link] = numberStr.split(',');
     });
 
+    return this.number;
     // fs.writeFileSync('./json/number.json', JSON.stringify(this.number));
   }
 

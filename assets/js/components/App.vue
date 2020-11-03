@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Fetcher @onFetch="fetch" :rssDates="rssDates" />
+    <Fetcher @onFetch="fetch" @onCheck="onCheck" />
     <PairTable :numbers="numberResult" :topNumbers="topNumbers" />
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -13,7 +13,7 @@
           role="tab"
           aria-controls="pills-gowith-pair-table"
           aria-selected="true"
-          >Go With</a
+          >Gợi ý</a
         >
       </li>
       <li class="nav-item">
@@ -25,7 +25,7 @@
           role="tab"
           aria-controls="pills-feed"
           aria-selected="false"
-          >Feed</a
+          >KQXS</a
         >
       </li>
     </ul>
@@ -51,12 +51,13 @@
 </template>
 
 <script>
-import NumberFetcher from "../services/number_fetcher";
-import NumberChecker from "../services/number_checker";
+import Separation from "../services/algorithms/separation";
+import Pair from "../services/algorithms/pair";
 import PairTable from "./PairTable.vue";
 import Fetcher from "./Fetcher.vue";
 import Feed from "./Feed.vue";
 import GoWithPairTable from "./GoWithPairTable.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "App",
@@ -65,10 +66,15 @@ export default {
       fetcher: null,
       checker: null,
       feedNumber: {},
-      rssDates: [],
     };
   },
   computed: {
+    ...mapGetters([
+      "feed",
+      "selectedProvince",
+      "selectedFeed",
+      "numberFilteredByDate",
+    ]),
     numberResult() {
       return (this.checker && this.checker.result) || {};
     },
@@ -76,7 +82,7 @@ export default {
       return (this.checker && this.checker.top10ResultNumber()) || [];
     },
     feedNumberArray() {
-      return Object.entries(this.feedNumber);
+      return Object.entries(this.selectedFeed);
     },
     rangeResultToPairs() {
       return (this.checker && this.checker.rangeResultToPairs()) || [];
@@ -89,14 +95,17 @@ export default {
     GoWithPairTable,
   },
   methods: {
-    async fetch(data) {
-      this.fetcher = NumberFetcher.getInstance(data.rss, data.selectedDate);
-      await this.fetcher.perform();
+    ...mapActions(["selectProvince", "selectDate"]),
+    fetch(data) {
+      this.selectProvince(data.rss);
+    },
+    async onCheck(data) {
+      this.selectDate(data.selectedDate);
+      this.checker = new {
+        pair: Pair,
+        separation: Separation,
+      }[data.selectedAlgorithm](this.numberFilteredByDate);
 
-      this.feedNumber = this.fetcher.number;
-      this.rssDates = this.fetcher.allDates();
-
-      this.checker = new NumberChecker(this.fetcher.number);
       this.checker.perform();
     },
   },

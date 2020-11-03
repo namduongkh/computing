@@ -25,7 +25,7 @@
             v-for="nSub in nums"
             :key="'td' + nSub"
           >
-            {{ numbers[`${n}${nSub}`] }}
+            {{ numbers[`${n}${nSub}`] || 0 }}
           </td>
         </tr>
       </tbody>
