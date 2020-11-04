@@ -45,6 +45,7 @@ const RSS = {
   gia_lai: "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
   quang_ngai: "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
   mien_trung: "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
+  mien_bac: "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss",
 };
 
 export default {
