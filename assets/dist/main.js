@@ -2489,11 +2489,16 @@ var NumberFetcher = function () {
                   if (Array.isArray(_this.acceptedDates) && _this.acceptedDates.indexOf(item.link) == -1) return;
 
                   item.description = item.description.replace(/\n/gim, '');
-                  var numberStr = item.description.replace(/^ĐB:\s([\d\s-]+)1:\s([\d\s-]+)2:\s([\d\s-]+)3:\s([\d\s-]+)4:\s([\d\s-]+)5:\s([\d\s-]+)6:\s([\d\s-]+)7:\s([\d\s-]+)8:\s([\d\s-]+)$/gi, '$1,$2,$3,$4,$5,$6,$7,$8,$9');
+                  var numberStr = [];
+                  [/ĐB:\s([\d\s-]+)1:/, /1:\s([\d\s-]+)2:/, /2:\s([\d\s-]+)3:/, /3:\s([\d\s-]+)4:/, /4:\s([\d\s-]+)5:/, /5:\s([\d\s-]+)6:/, /6:\s([\d\s-]+)7:/, /7:\s([\d\s-]+)8:/, /7:\s([\d\s-]+)$/, /8:\s([\d\s-]+)$/].forEach(function (reg) {
+                    var match = item.description.match(reg);
+                    if (match) numberStr.push(match[1]);
+                  });
+                  numberStr = numberStr.join(',');
                   numberStr = numberStr.replace(/\s-\s/gi, ',');
 
-                  console.log(item.link);
-                  console.log(numberStr);
+                  // console.log(item.link);
+                  // console.log(numberStr);
 
                   _this.number[item.link] = numberStr.split(',');
                 });
@@ -2872,7 +2877,8 @@ var RSS = {
   quang_binh: "https://xskt.com.vn/rss-feed/quang-binh-xsqb.rss",
   gia_lai: "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
   quang_ngai: "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
-  mien_trung: "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss"
+  mien_trung: "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
+  mien_bac: "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss"
 }; //
 //
 //
