@@ -35,11 +35,28 @@ export default class NumberFetcher {
       if (Array.isArray(this.acceptedDates) && this.acceptedDates.indexOf(item.link) == -1) return;
 
       item.description = item.description.replace(/\n/gim, '');
-      let numberStr = item.description.replace(/^ĐB:\s([\d\s-]+)1:\s([\d\s-]+)2:\s([\d\s-]+)3:\s([\d\s-]+)4:\s([\d\s-]+)5:\s([\d\s-]+)6:\s([\d\s-]+)7:\s([\d\s-]+)8:\s([\d\s-]+)$/gi, '$1,$2,$3,$4,$5,$6,$7,$8,$9');
+      let numberStr = [];
+      [
+        /ĐB:\s([\d\s-]+)1:/,
+        /1:\s([\d\s-]+)2:/,
+        /2:\s([\d\s-]+)3:/,
+        /3:\s([\d\s-]+)4:/,
+        /4:\s([\d\s-]+)5:/,
+        /5:\s([\d\s-]+)6:/,
+        /6:\s([\d\s-]+)7:/,
+        /7:\s([\d\s-]+)8:/,
+        /7:\s([\d\s-]+)$/,
+        /8:\s([\d\s-]+)$/
+      ].forEach(reg => {
+        let match = item.description.match(reg);
+        if (match)
+          numberStr.push(match[1]);
+      })
+      numberStr = numberStr.join(',');
       numberStr = numberStr.replace(/\s-\s/gi, ',');
 
-      console.log(item.link);
-      console.log(numberStr);
+      // console.log(item.link);
+      // console.log(numberStr);
 
       this.number[item.link] = numberStr.split(',');
     });
