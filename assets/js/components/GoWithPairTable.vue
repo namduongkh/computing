@@ -5,6 +5,7 @@
       class="form-control"
       v-model="numberFilter"
       placeholder="Filter"
+      @change="changeNumberFilter"
     />
     <table class="table table-bordered table-sm">
       <thead>
@@ -24,15 +25,14 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "GoWithPairTable",
   props: {
     numbers: {
       type: Array,
       default: () => [],
-    },
-    filterNumber: {
-      type: String,
     },
   },
   data() {
@@ -41,6 +41,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["filterNumber"]),
     filteredNumber() {
       if (!this.numberFilter) return this.numbers;
       return this.numbers.filter(
@@ -63,6 +64,17 @@ export default {
       let withNumber = match[1];
 
       return withNumber;
+    },
+  },
+  methods: {
+    ...mapActions(["selectFilterNumber"]),
+    changeNumberFilter() {
+      this.selectFilterNumber(this.numberFilter);
+    },
+  },
+  watch: {
+    filterNumber(val) {
+      this.numberFilter = val;
     },
   },
 };

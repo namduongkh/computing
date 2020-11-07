@@ -18,3 +18,11 @@ new Vue({
   template: '<App/>',
   created() { }
 }).$mount('#app')
+
+window.CommonJs = (function () {
+  return {
+    toggleLoadingWrapper(flag = true) {
+      $('.loading-wrapper').toggle(flag);
+    }
+  }
+})()
