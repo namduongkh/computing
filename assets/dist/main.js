@@ -1867,6 +1867,19 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./assets/js/common.js":
+/*!*****************************!*\
+  !*** ./assets/js/common.js ***!
+  \*****************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements:  */
+/***/ (() => {
+
+"use strict";
+
+
+/***/ }),
+
 /***/ "./assets/js/main.js":
 /*!***************************!*\
   !*** ./assets/js/main.js ***!
@@ -1876,6 +1889,7 @@ module.exports = {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
+/* provided dependency */ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
 var _vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.js");
@@ -1913,6 +1927,16 @@ new _vue2.default({
   template: '<App/>',
   created: function created() {}
 }).$mount('#app');
+
+window.CommonJs = function () {
+  return {
+    toggleLoadingWrapper: function toggleLoadingWrapper() {
+      var flag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      $('.loading-wrapper').toggle(flag);
+    }
+  };
+}();
 
 /***/ }),
 
@@ -2186,6 +2210,10 @@ var _number_checker = __webpack_require__(/*! ./number_checker */ "./assets/js/s
 
 var _number_checker2 = _interopRequireDefault(_number_checker);
 
+var _lodash = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Separation = function (_NumberChecker) {
@@ -2197,21 +2225,21 @@ var Separation = function (_NumberChecker) {
   }
 
   (0, _createClass3.default)(Separation, [{
-    key: 'perform',
+    key: "perform",
     value: function perform() {
       this.checkNumArray();
     }
   }, {
-    key: 'checkNumArray',
+    key: "checkNumArray",
     value: function checkNumArray() {
       var _this2 = this;
 
-      _.map(this.allNumberArray, function (numStr) {
+      _lodash2.default.map(this.allNumberArray, function (numStr) {
         return _this2.checkNumberString(numStr);
       });
     }
   }, {
-    key: 'checkNumberString',
+    key: "checkNumberString",
     value: function checkNumberString(numStr) {
       var _this3 = this;
 
@@ -2220,16 +2248,24 @@ var Separation = function (_NumberChecker) {
       splitNum.forEach(function (rootNum, i) {
         splitNum.forEach(function (num, j) {
           if (i !== j) {
-            var targetNum = '' + rootNum + num;
+            var targetNum = "" + rootNum + num;
             _this3.result[targetNum] = '__';
           }
         });
       });
     }
   }, {
-    key: 'top10Result',
+    key: "top10Result",
     value: function top10Result() {
-      return [];
+      var _this4 = this;
+
+      _lodash2.default.times(99, function (n) {
+        n = (n < 10 ? '0' : '') + n;
+        _this4.result[n] = _this4.result[n] || 0;
+      });
+      return _lodash2.default.toPairs(this.result).filter(function (i) {
+        return !i[1];
+      }).slice(0, 10);
     }
   }]);
   return Separation;
@@ -2276,7 +2312,8 @@ exports.default = {
     selectedProvince: null,
     feed: {},
     selectedFeed: {},
-    selectedDate: []
+    selectedDate: [],
+    filterNumber: null
   },
   mutations: {
     addFeed: function addFeed(state, data) {
@@ -2291,6 +2328,9 @@ exports.default = {
     },
     selectDate: function selectDate(state, data) {
       state.selectedDate = data;
+    },
+    selectFilterNumber: function selectFilterNumber(state, number) {
+      state.filterNumber = number;
     }
   },
   actions: {
@@ -2299,16 +2339,21 @@ exports.default = {
 
       commit('addFeed', data);
     },
-    selectDate: function selectDate(_ref2, data) {
+    selectFilterNumber: function selectFilterNumber(_ref2, data) {
       var commit = _ref2.commit;
+
+      commit('selectFilterNumber', data);
+    },
+    selectDate: function selectDate(_ref3, data) {
+      var commit = _ref3.commit;
 
       commit('selectDate', data);
     },
-    selectProvince: function selectProvince(_ref3, province) {
+    selectProvince: function selectProvince(_ref4, province) {
       var _this = this;
 
-      var commit = _ref3.commit,
-          state = _ref3.state;
+      var commit = _ref4.commit,
+          state = _ref4.state;
       return (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
         var fetcher, number;
         return _regenerator2.default.wrap(function _callee$(_context) {
@@ -2356,6 +2401,12 @@ exports.default = {
     },
     selectedFeed: function selectedFeed(state) {
       return state.selectedFeed;
+    },
+    filterNumber: function filterNumber(state) {
+      return state.filterNumber;
+    },
+    selectedDate: function selectedDate(state) {
+      return state.selectedDate;
     },
     numberFilteredByDate: function numberFilteredByDate(state) {
       var number = {};
@@ -2593,6 +2644,8 @@ var RssParser = function () {
       var CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
       return new _promise2.default(function (rs, rj) {
+        CommonJs.toggleLoadingWrapper(true);
+
         _axios2.default.get(CORS_PROXY + _this.url).then(function (_ref) {
           var data = _ref.data;
 
@@ -2601,6 +2654,8 @@ var RssParser = function () {
           });
         }).then(function (result) {
           rs(result.rss.channel);
+        }).finally(function () {
+          CommonJs.toggleLoadingWrapper(false);
         });
       });
     }
@@ -2785,6 +2840,12 @@ exports.default = {
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 
@@ -2796,8 +2857,8 @@ exports.default = {
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export default [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
@@ -2805,21 +2866,14 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _extends2 = __webpack_require__(/*! babel-runtime/helpers/extends */ "./node_modules/babel-runtime/helpers/extends.js");
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _vuex = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   name: "Feed",
@@ -2830,8 +2884,28 @@ exports.default = {
         return [];
       }
     }
+  },
+  computed: (0, _extends3.default)({}, (0, _vuex.mapGetters)(["filterNumber"])),
+  filters: {
+    displayFeed: function displayFeed(numStr, filterNumber) {
+      return numStr.replace(new RegExp("(" + filterNumber + ")", "gi"), "<span class='selected'>$1</span>");
+    }
   }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 
@@ -2870,15 +2944,15 @@ var _vuex = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.j
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RSS = {
-  phu_yen: "https://xskt.com.vn/rss-feed/phu-yen-xspy.rss",
-  dak_lak: "https://xskt.com.vn/rss-feed/dac-lac-xsdlk.rss",
-  khanh_hoa: "https://xskt.com.vn/rss-feed/khanh-hoa-xskh.rss",
-  binh_dinh: "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss",
-  quang_binh: "https://xskt.com.vn/rss-feed/quang-binh-xsqb.rss",
-  gia_lai: "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
-  quang_ngai: "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
-  mien_trung: "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
-  mien_bac: "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss"
+  "Phú Yên": "https://xskt.com.vn/rss-feed/phu-yen-xspy.rss",
+  Daklak: "https://xskt.com.vn/rss-feed/dac-lac-xsdlk.rss",
+  "Khánh Hoà": "https://xskt.com.vn/rss-feed/khanh-hoa-xskh.rss",
+  "Bình Định": "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss",
+  "Quảng Bình": "https://xskt.com.vn/rss-feed/quang-binh-xsqb.rss",
+  "Gia Lai": "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
+  "Quảng Ngãi": "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
+  "Miền Trung": "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
+  "Miền Bắc": "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss"
 }; //
 //
 //
@@ -2923,7 +2997,7 @@ exports.default = {
       rss: null,
       selectedDate: {},
       algorithms: [["pair", "Cặp đôi hoàn hảo"], ["separation", "Đôi ngã chia ly"]],
-      selectedAlgorithm: "pair"
+      selectedAlgorithm: "separation"
     };
   },
 
@@ -2976,8 +3050,8 @@ exports.default = {
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export default [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
@@ -2985,31 +3059,14 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _extends2 = __webpack_require__(/*! babel-runtime/helpers/extends */ "./node_modules/babel-runtime/helpers/extends.js");
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _vuex = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   name: "GoWithPairTable",
@@ -3019,9 +3076,6 @@ exports.default = {
       default: function _default() {
         return [];
       }
-    },
-    filterNumber: {
-      type: String
     }
   },
   data: function data() {
@@ -3030,7 +3084,7 @@ exports.default = {
     };
   },
 
-  computed: {
+  computed: (0, _extends3.default)({}, (0, _vuex.mapGetters)(["filterNumber"]), {
     filteredNumber: function filteredNumber() {
       var _this = this;
 
@@ -3039,7 +3093,7 @@ exports.default = {
         return i[0].replace(/(\[|\])/gi, "").indexOf(_this.numberFilter) != -1;
       });
     }
-  },
+  }),
   filters: {
     displayNumber: function displayNumber(num) {
       var numberFilter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
@@ -3058,8 +3112,43 @@ exports.default = {
 
       return withNumber;
     }
+  },
+  methods: (0, _extends3.default)({}, (0, _vuex.mapActions)(["selectFilterNumber"]), {
+    changeNumberFilter: function changeNumberFilter() {
+      this.selectFilterNumber(this.numberFilter);
+    }
+  }),
+  watch: {
+    filterNumber: function filterNumber(val) {
+      this.numberFilter = val;
+    }
   }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 
@@ -3071,8 +3160,8 @@ exports.default = {
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export default [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
@@ -3080,41 +3169,18 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _isSafeInteger = __webpack_require__(/*! babel-runtime/core-js/number/is-safe-integer */ "./node_modules/babel-runtime/core-js/number/is-safe-integer.js");
+
+var _isSafeInteger2 = _interopRequireDefault(_isSafeInteger);
+
+var _extends2 = __webpack_require__(/*! babel-runtime/helpers/extends */ "./node_modules/babel-runtime/helpers/extends.js");
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _vuex = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   name: "PairTable",
@@ -3132,10 +3198,101 @@ exports.default = {
   },
   data: function data() {
     return {
-      nums: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      nums: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      selectedNumber: null
     };
-  }
-};
+  },
+
+  computed: (0, _extends3.default)({}, (0, _vuex.mapGetters)(["selectedDate"]), {
+    computedTopNumbers: function computedTopNumbers() {
+      if (!this.selectedDate || !this.selectedDate.length) return [];
+
+      return this.topNumbers;
+    }
+  }),
+  filters: {
+    numberFontSize: function numberFontSize(num) {
+      if (!(0, _isSafeInteger2.default)(num)) return 1;
+
+      var size = num / 8;
+      size = size < 0.3 ? 0.3 : size;
+      size = size > 1 ? 1 : size;
+
+      return size;
+    }
+  },
+  methods: (0, _extends3.default)({}, (0, _vuex.mapActions)(["selectFilterNumber"]), {
+    selectNumber: function selectNumber(number) {
+      if (number !== this.selectedNumber) {
+        this.selectedNumber = number;
+      } else {
+        this.selectedNumber = null;
+      }
+
+      this.selectFilterNumber(this.selectedNumber);
+    }
+  })
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/***/ }),
+
+/***/ "./node_modules/babel-runtime/core-js/number/is-safe-integer.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/babel-runtime/core-js/number/is-safe-integer.js ***!
+  \**********************************************************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: module, __webpack_require__ */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = { "default": __webpack_require__(/*! core-js/library/fn/number/is-safe-integer */ "./node_modules/core-js/library/fn/number/is-safe-integer.js"), __esModule: true };
 
 /***/ }),
 
@@ -9975,6 +10132,21 @@ var hexSliceLookupTable = (function () {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/library/fn/number/is-safe-integer.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/core-js/library/fn/number/is-safe-integer.js ***!
+  \*******************************************************************/
+/*! dynamic exports */
+/*! exports [maybe provided (runtime-defined)] [no usage info] */
+/*! runtime requirements: module, __webpack_require__ */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+__webpack_require__(/*! ../../modules/es6.number.is-safe-integer */ "./node_modules/core-js/library/modules/es6.number.is-safe-integer.js");
+module.exports = __webpack_require__(/*! ../../modules/_core */ "./node_modules/core-js/library/modules/_core.js").Number.isSafeInteger;
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/library/fn/object/assign.js":
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/library/fn/object/assign.js ***!
@@ -10719,6 +10891,24 @@ module.exports = function (it) {
 var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/library/modules/_cof.js");
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/library/modules/_is-integer.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/library/modules/_is-integer.js ***!
+  \*************************************************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: module, __webpack_require__ */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// 20.1.2.3 Number.isInteger(number)
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/library/modules/_is-object.js");
+var floor = Math.floor;
+module.exports = function isInteger(it) {
+  return !isObject(it) && isFinite(it) && floor(it) === it;
 };
 
 
@@ -12162,6 +12352,28 @@ Iterators.Arguments = Iterators.Array;
 addToUnscopables('keys');
 addToUnscopables('values');
 addToUnscopables('entries');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/library/modules/es6.number.is-safe-integer.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/core-js/library/modules/es6.number.is-safe-integer.js ***!
+  \****************************************************************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: __webpack_require__ */
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+// 20.1.2.5 Number.isSafeInteger(number)
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/library/modules/_export.js");
+var isInteger = __webpack_require__(/*! ./_is-integer */ "./node_modules/core-js/library/modules/_is-integer.js");
+var abs = Math.abs;
+
+$export($export.S, 'Number', {
+  isSafeInteger: function isSafeInteger(number) {
+    return isInteger(number) && abs(number) <= 0x1fffffffffffff;
+  }
+});
 
 
 /***/ }),
@@ -41688,6 +41900,38 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 /*!******************************!*\
   !*** ./assets/css/main.scss ***!
   \******************************/
+/*! namespace exports */
+/*! exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! namespace exports */
+/*! exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! namespace exports */
 /*! exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
@@ -72603,7 +72847,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Feed_vue_vue_type_template_id_5e4f8a3f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Feed.vue?vue&type=template&id=5e4f8a3f& */ "./assets/js/components/Feed.vue?vue&type=template&id=5e4f8a3f&");
 /* harmony import */ var _Feed_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Feed.vue?vue&type=script&lang=js& */ "./assets/js/components/Feed.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _Feed_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Feed.vue?vue&type=style&index=0&lang=css& */ "./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -72611,7 +72857,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
   _Feed_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
   _Feed_vue_vue_type_template_id_5e4f8a3f___WEBPACK_IMPORTED_MODULE_0__.render,
   _Feed_vue_vue_type_template_id_5e4f8a3f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -72738,7 +72984,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _PairTable_vue_vue_type_template_id_b310137a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PairTable.vue?vue&type=template&id=b310137a& */ "./assets/js/components/PairTable.vue?vue&type=template&id=b310137a&");
 /* harmony import */ var _PairTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PairTable.vue?vue&type=script&lang=js& */ "./assets/js/components/PairTable.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _PairTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PairTable.vue?vue&type=style&index=0&lang=css& */ "./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -72746,7 +72994,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
   _PairTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
   _PairTable_vue_vue_type_template_id_b310137a___WEBPACK_IMPORTED_MODULE_0__.render,
   _PairTable_vue_vue_type_template_id_b310137a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -72871,6 +73119,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PairTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PairTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/PairTable.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PairTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************!*\
+  !*** ./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************/
+/*! namespace exports */
+/*! exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_3_0_rules_0_use_2_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_Feed_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/mini-css-extract-plugin/dist/loader.js!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!../../../node_modules/sass-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Feed.vue?vue&type=style&index=0&lang=css& */ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/Feed.vue?vue&type=style&index=0&lang=css&");
+
+
+/***/ }),
+
+/***/ "./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************!*\
+  !*** ./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************/
+/*! namespace exports */
+/*! exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_3_0_rules_0_use_2_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_PairTable_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/mini-css-extract-plugin/dist/loader.js!../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!../../../node_modules/sass-loader/dist/cjs.js!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PairTable.vue?vue&type=style&index=0&lang=css& */ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-3[0].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./assets/js/components/PairTable.vue?vue&type=style&index=0&lang=css&");
+
 
 /***/ }),
 
@@ -73053,7 +73333,9 @@ var render = function() {
             1
           )
         ]
-      )
+      ),
+      _vm._v(" "),
+      _vm._m(1)
     ],
     1
   )
@@ -73107,6 +73389,16 @@ var staticRenderFns = [
         ])
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "loading-wrapper" }, [
+      _c("div", { staticClass: "content" }, [
+        _c("div", { staticClass: "lds-dual-ring" })
+      ])
+    ])
   }
 ]
 render._withStripped = true
@@ -73136,7 +73428,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "feed" }, [
     _c(
       "ul",
       _vm._l(_vm.feed, function(f, i) {
@@ -73147,9 +73439,16 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c("blockquote", [
-            _vm._v("\n        " + _vm._s(f[1].join(", ")) + "\n      ")
-          ])
+          _c("blockquote", {
+            domProps: {
+              innerHTML: _vm._s(
+                _vm.$options.filters.displayFeed(
+                  f[1].join(", "),
+                  _vm.filterNumber
+                )
+              )
+            }
+          })
         ])
       }),
       0
@@ -73244,7 +73543,7 @@ var render = function() {
                         expression: "selectedDate[o]"
                       }
                     ],
-                    attrs: { type: "checkbox" },
+                    attrs: { type: "checkbox", id: o },
                     domProps: {
                       checked: Array.isArray(_vm.selectedDate[o])
                         ? _vm._i(_vm.selectedDate[o], null) > -1
@@ -73275,7 +73574,8 @@ var render = function() {
                       }
                     }
                   }),
-                  _vm._v("\n        " + _vm._s(o) + "\n      ")
+                  _vm._v(" "),
+                  _c("label", { attrs: { for: o } }, [_vm._v(_vm._s(o))])
                 ])
               })
             ],
@@ -73370,6 +73670,7 @@ var render = function() {
       attrs: { type: "text", placeholder: "Filter" },
       domProps: { value: _vm.numberFilter },
       on: {
+        change: _vm.changeNumberFilter,
         input: function($event) {
           if ($event.target.composing) {
             return
@@ -73449,10 +73750,22 @@ var render = function() {
       [
         _c("strong", [_vm._v("Top 10:")]),
         _vm._v(" "),
-        _vm._l(_vm.topNumbers, function(n) {
+        _vm._l(_vm.computedTopNumbers, function(n) {
           return _c(
             "span",
-            { key: "top" + n, staticClass: "badge badge-pill badge-success" },
+            {
+              key: "top" + n,
+              staticClass: "badge badge-pill",
+              class: {
+                "badge-primary": _vm.selectedNumber == n,
+                "badge-success": _vm.selectedNumber !== n
+              },
+              on: {
+                click: function($event) {
+                  return _vm.selectNumber(n)
+                }
+              }
+            },
             [_vm._v(_vm._s(n))]
           )
         })
@@ -73462,7 +73775,7 @@ var render = function() {
     _vm._v(" "),
     _c(
       "table",
-      { staticClass: "table table-bordered table-sm table-striped" },
+      { staticClass: "table table-bordered table-sm table-striped pair-table" },
       [
         _c("thead", [
           _c(
@@ -73496,7 +73809,21 @@ var render = function() {
                       key: "td" + nSub,
                       staticClass: "text-center",
                       class: {
-                        "text-success": _vm.topNumbers.includes("" + n + nSub)
+                        "text-success": _vm.computedTopNumbers.includes(
+                          "" + n + nSub
+                        ),
+                        selected: _vm.selectedNumber == "" + n + nSub
+                      },
+                      style:
+                        "font-size:" +
+                        _vm.$options.filters.numberFontSize(
+                          _vm.numbers["" + n + nSub]
+                        ) +
+                        "em",
+                      on: {
+                        click: function($event) {
+                          return _vm.selectNumber("" + n + nSub)
+                        }
                       }
                     },
                     [
@@ -95258,6 +95585,7 @@ var index = {
 /******/ 	// Load entry module
 /******/ 	__webpack_require__("./assets/css/main.scss");
 /******/ 	// This entry module used 'exports' so it can't be inlined
+/******/ 	__webpack_require__("./assets/js/common.js");
 /******/ 	__webpack_require__("./assets/js/main.js");
 /******/ })()
 ;
