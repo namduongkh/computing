@@ -1,4 +1,5 @@
 import NumberChecker from "./number_checker";
+import _ from "lodash";
 
 export default class Separation extends NumberChecker {
 
@@ -24,6 +25,10 @@ export default class Separation extends NumberChecker {
   }
 
   top10Result() {
-    return [];
+    _.times(99, n => {
+      n = (n < 10 ? '0' : '') + n;
+      this.result[n] = this.result[n] || 0
+    })
+    return _.toPairs(this.result).filter(i => !i[1]).slice(0, 10);
   }
 }

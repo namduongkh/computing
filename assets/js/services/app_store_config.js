@@ -6,6 +6,7 @@ export default {
     feed: {},
     selectedFeed: {},
     selectedDate: [],
+    filterNumber: null
   },
   mutations: {
     addFeed(state, data) {
@@ -18,11 +19,17 @@ export default {
     },
     selectDate(state, data) {
       state.selectedDate = data;
+    },
+    selectFilterNumber(state, number) {
+      state.filterNumber = number;
     }
   },
   actions: {
     addFeed({ commit }, data) {
       commit('addFeed', data);
+    },
+    selectFilterNumber({ commit }, data) {
+      commit('selectFilterNumber', data);
     },
     selectDate({ commit }, data) {
       commit('selectDate', data);
@@ -44,6 +51,8 @@ export default {
     selectedProvince: state => state.selectedProvince,
     feed: state => state.feed,
     selectedFeed: state => state.selectedFeed,
+    filterNumber: state => state.filterNumber,
+    selectedDate: state => state.selectedDate,
     numberFilteredByDate: state => {
       let number = {};
       for (let i in state.selectedFeed) {

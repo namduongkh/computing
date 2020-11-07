@@ -11,6 +11,8 @@ export default class RssParser {
     const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
     return new Promise((rs, rj) => {
+      CommonJs.toggleLoadingWrapper(true);
+
       axios.get(CORS_PROXY + this.url)
         .then(({ data }) => {
           return parseStringPromise(data, {
@@ -19,7 +21,10 @@ export default class RssParser {
         })
         .then((result) => {
           rs(result.rss.channel);
-        });
+        })
+        .finally(() => {
+          CommonJs.toggleLoadingWrapper(false);
+        })
     });
   }
 }

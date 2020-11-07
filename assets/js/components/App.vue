@@ -47,6 +47,12 @@
         <Feed :feed="feedNumberArray" />
       </div>
     </div>
+
+    <div class="loading-wrapper">
+      <div class="content">
+        <div class="lds-dual-ring"></div>
+      </div>
+    </div>
   </div>
 </template>
 

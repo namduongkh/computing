@@ -12,8 +12,8 @@
       <div class="form-group">
         <strong for="">Ngày gần nhất:</strong>
         <div v-for="o in rssDates" :key="o" :value="o">
-          <input type="checkbox" v-model="selectedDate[o]" />
-          {{ o }}
+          <input type="checkbox" v-model="selectedDate[o]" :id="o" />
+          <label :for="o">{{ o }}</label>
         </div>
       </div>
 
@@ -37,15 +37,15 @@
 import { mapGetters, mapActions } from "vuex";
 
 const RSS = {
-  phu_yen: "https://xskt.com.vn/rss-feed/phu-yen-xspy.rss",
-  dak_lak: "https://xskt.com.vn/rss-feed/dac-lac-xsdlk.rss",
-  khanh_hoa: "https://xskt.com.vn/rss-feed/khanh-hoa-xskh.rss",
-  binh_dinh: "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss",
-  quang_binh: "https://xskt.com.vn/rss-feed/quang-binh-xsqb.rss",
-  gia_lai: "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
-  quang_ngai: "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
-  mien_trung: "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
-  mien_bac: "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss",
+  "Phú Yên": "https://xskt.com.vn/rss-feed/phu-yen-xspy.rss",
+  Daklak: "https://xskt.com.vn/rss-feed/dac-lac-xsdlk.rss",
+  "Khánh Hoà": "https://xskt.com.vn/rss-feed/khanh-hoa-xskh.rss",
+  "Bình Định": "https://xskt.com.vn/rss-feed/binh-dinh-xsbdi.rss",
+  "Quảng Bình": "https://xskt.com.vn/rss-feed/quang-binh-xsqb.rss",
+  "Gia Lai": "https://xskt.com.vn/rss-feed/gia-lai-xsgl.rss",
+  "Quảng Ngãi": "https://xskt.com.vn/rss-feed/quang-ngai-xsqng.rss",
+  "Miền Trung": "https://xskt.com.vn/rss-feed/mien-trung-xsmt.rss",
+  "Miền Bắc": "https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss",
 };
 
 export default {
@@ -59,7 +59,7 @@ export default {
         ["pair", "Cặp đôi hoàn hảo"],
         ["separation", "Đôi ngã chia ly"],
       ],
-      selectedAlgorithm: "pair",
+      selectedAlgorithm: "separation",
     };
   },
   computed: {
