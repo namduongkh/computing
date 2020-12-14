@@ -37,23 +37,23 @@ export default class NumberFetcher {
       item.description = item.description.replace(/\n/gim, '');
       let numberStr = [];
       [
-        /ĐB:\s([\d\s-]+)1:/,
-        /1:\s([\d\s-]+)2:/,
-        /2:\s([\d\s-]+)3:/,
-        /3:\s([\d\s-]+)4:/,
-        /4:\s([\d\s-]+)5:/,
-        /5:\s([\d\s-]+)6:/,
-        /6:\s([\d\s-]+)7:/,
-        /7:\s([\d\s-]+)8:/,
-        /7:\s([\d\s-]+)$/,
-        /8:\s([\d\s-]+)$/
+        /(ĐB):\s{0,1}([\d\s-]+)(1|Nhất):/,
+        /(1|Nhất):\s{0,1}([\d\s-]+)(2|Nhì):/,
+        /(2|Nhì):\s{0,1}([\d\s-]+)(3|Ba):/,
+        /(3|Ba):\s{0,1}([\d\s-]+)(4|Tư):/,
+        /(4|Tư):\s{0,1}([\d\s-]+)(5|Năm):/,
+        /(5|Năm):\s{0,1}([\d\s-]+)(6|Sáu):/,
+        /(6|Sáu):\s{0,1}([\d\s-]+)(7|Bảy):/,
+        /(7|Bảy):\s{0,1}([\d\s-]+)(8):/,
+        /(7|Bảy):\s{0,1}([\d\s-]+)$/,
+        /(8):\s{0,1}([\d\s-]+)$/
       ].forEach(reg => {
         let match = item.description.match(reg);
         if (match)
-          numberStr.push(match[1]);
+          numberStr.push(match[2]);
       })
       numberStr = numberStr.join(',');
-      numberStr = numberStr.replace(/\s-\s/gi, ',');
+      numberStr = numberStr.replace(/\s{0,1}-\s{0,1}/gi, ',');
 
       // console.log(item.link);
       // console.log(numberStr);
