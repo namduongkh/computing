@@ -2076,17 +2076,27 @@ var NumberChecker = function () {
       splitNum.forEach(function (num, index) {
         // if (!this.result[num]) this.result[num] = {};
 
-        var prev = splitNum[index - 1];
+        // let prev = splitNum[index - 1];
         var next = splitNum[index + 1];
+        var nextOfNext = splitNum[index + 2];
 
-        if (prev) {
-          var targetNum = '' + prev + num;
-          _this2.result[targetNum] = (_this2.result[targetNum] || 0) + 1;
-        }
+        // if (prev) {
+        //   let targetNum = `${prev}${num}`;
+        //   this.result[targetNum] = (this.result[targetNum] || 0) + 1;
+        // }
 
         if (next) {
-          var _targetNum = '' + num + next;
-          _this2.result[_targetNum] = (_this2.result[_targetNum] || 0) + 1;
+          var targetNum1 = '' + num + next;
+          var targetNum2 = '' + next + num;
+
+          if (nextOfNext) {
+            if (_this2.result[targetNum1] != '__') _this2.result[targetNum1] = (_this2.result[targetNum1] || 0) + 1;
+            if (targetNum1 != targetNum2 && _this2.result[targetNum2] != '__') {
+              _this2.result[targetNum2] = (_this2.result[targetNum2] || 0) + 1;
+            }
+          } else {
+            _this2.result[targetNum1] = '__';
+          }
         }
       });
     }
@@ -3265,6 +3275,10 @@ exports.default = {
     }
   })
 }; //
+//
+//
+//
+//
 //
 //
 //
@@ -74033,25 +74047,31 @@ var render = function() {
     _c(
       "div",
       [
-        _c("strong", [_vm._v("Top 10:")]),
+        _c("strong", [_vm._v("TOP:")]),
         _vm._v(" "),
         _vm._l(_vm.computedTopNumbers, function(n) {
           return _c(
-            "span",
+            "a",
             {
               key: "top" + n,
-              staticClass: "badge badge-pill",
+              staticClass: "btn btn-sm top-number",
               class: {
-                "badge-primary": _vm.selectedNumber == n,
-                "badge-success": _vm.selectedNumber !== n
+                "btn-primary": _vm.selectedNumber == n,
+                "btn-success": _vm.selectedNumber !== n
               },
+              attrs: { href: "javascript:void(0)" },
               on: {
                 click: function($event) {
                   return _vm.selectNumber(n)
                 }
               }
             },
-            [_vm._v(_vm._s(n))]
+            [
+              _c("strong", [_vm._v(_vm._s(n))]),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v("\n      (" + _vm._s(_vm.numbers["" + n] || 0) + ")\n    ")
+            ]
           )
         })
       ],

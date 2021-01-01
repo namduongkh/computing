@@ -9945,6 +9945,9 @@ h3 {
 .pair-table td {
   vertical-align: middle;
 }
+.top-number {
+  margin-left: 2px;
+}
 .feed .selected {
   background: yellow;
   font-weight: 700;
