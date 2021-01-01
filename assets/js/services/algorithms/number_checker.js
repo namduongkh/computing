@@ -55,17 +55,28 @@ export default class NumberChecker {
     splitNum.forEach((num, index) => {
       // if (!this.result[num]) this.result[num] = {};
 
-      let prev = splitNum[index - 1];
+      // let prev = splitNum[index - 1];
       let next = splitNum[index + 1];
+      let nextOfNext = splitNum[index + 2];
 
-      if (prev) {
-        let targetNum = `${prev}${num}`;
-        this.result[targetNum] = (this.result[targetNum] || 0) + 1;
-      }
+      // if (prev) {
+      //   let targetNum = `${prev}${num}`;
+      //   this.result[targetNum] = (this.result[targetNum] || 0) + 1;
+      // }
 
       if (next) {
-        let targetNum = `${num}${next}`;
-        this.result[targetNum] = (this.result[targetNum] || 0) + 1;
+        let targetNum1 = `${num}${next}`;
+        let targetNum2 = `${next}${num}`;
+
+        if (nextOfNext) {
+          if (this.result[targetNum1] != '__')
+            this.result[targetNum1] = (this.result[targetNum1] || 0) + 1;
+          if (targetNum1 != targetNum2 && this.result[targetNum2] != '__') {
+            this.result[targetNum2] = (this.result[targetNum2] || 0) + 1;
+          }
+        } else {
+          this.result[targetNum1] = '__';
+        }
       }
     });
   }
