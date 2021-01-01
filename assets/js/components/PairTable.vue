@@ -1,18 +1,22 @@
 <template>
   <div>
     <div>
-      <strong>Top 10:</strong>
-      <span
-        class="badge badge-pill"
+      <strong>TOP:</strong>
+      <a
+        class="btn btn-sm top-number"
         v-for="n in computedTopNumbers"
         :key="'top' + n"
         :class="{
-          'badge-primary': selectedNumber == n,
-          'badge-success': selectedNumber !== n,
+          'btn-primary': selectedNumber == n,
+          'btn-success': selectedNumber !== n,
         }"
         @click="selectNumber(n)"
-        >{{ n }}</span
+        href="javascript:void(0)"
       >
+        <strong>{{ n }}</strong>
+        <br />
+        ({{ numbers[`${n}`] || 0 }})
+      </a>
     </div>
     <table class="table table-bordered table-sm table-striped pair-table">
       <thead>
@@ -109,5 +113,8 @@ export default {
 }
 .pair-table td {
   vertical-align: middle;
+}
+.top-number {
+  margin-left: 2px;
 }
 </style>
