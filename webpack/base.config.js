@@ -1,19 +1,25 @@
 const Glob = require('glob');
-const ROOT_PATH = process.cwd();
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const Webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Config = require("./config.js").default;
+
+const ROOT_PATH = process.cwd();
+
+let { folderName } = Config;
+if (folderName) { folderName += "/" }
 
 module.exports = function (env) {
     return {
         target: 'web',
         entry: {
-            main: Glob.sync(ROOT_PATH + "/assets/+(css|js)/+(*.js|*.css|*.scss)")
+            main: Glob.sync(ROOT_PATH + `/${folderName}+(css|js)/+(*.js|*.css|*.scss)`)
         },
         resolve: {
             extensions: ['.js', '.jsx', '.css', '.scss'],
             alias: {
-                vue: 'vue/dist/vue.js'
+                vue: 'vue/dist/vue.js',
+                '@assets': ROOT_PATH + `/assets`,
             },
             fallback: {
                 "timers": require.resolve("timers-browserify"),
@@ -24,10 +30,8 @@ module.exports = function (env) {
             }
         },
         output: {
-            path: ROOT_PATH + "/assets/dist",
+            path: ROOT_PATH + `/dist`,
             chunkFilename: '[name].js',
-            // sourceMapFilename: '[name].map',
-            publicPath: ROOT_PATH
         },
         plugins: [
             new MiniCssExtractPlugin(),
@@ -58,9 +62,6 @@ module.exports = function (env) {
                         {
                             loader: MiniCssExtractPlugin.loader
                         },
-                        // {
-                        //     loader: 'vue-style-loader',
-                        // },
                         {
                             loader: 'css-loader',
                         },

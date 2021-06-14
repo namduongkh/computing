@@ -22,6 +22,9 @@ export default class RssParser {
         .then((result) => {
           rs(result.rss.channel);
         })
+        .catch(error => {
+          window.open(`${CORS_PROXY}corsdemo`);
+        })
         .finally(() => {
           CommonJs.toggleLoadingWrapper(false);
         })
